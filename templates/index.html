@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <p class="eyebrow">Campus security · Pre-registration</p>
+        <h1>Register before you arrive. Walk in with a digital visitor pass.</h1>
+        <p class="lead">Create a visitor record, receive a unique Pass ID, and present a QR-coded badge at the gate. Security verifies the pass in seconds.</p>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <a class="btn btn-primary btn-lg" href="{{ url_for('visitor.register') }}">Register Visitor</a>
+          <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('verification.verify_form') }}">Verify Pass</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="hero-pass-card">
+          <div class="hero-pass-head">VISITOR PASS</div>
+          <div class="hero-pass-body">
+            <div class="hero-photo"></div>
+            <div>
+              <p class="mb-1 text-muted small">Pass ID</p>
+              <p class="fw-bold mb-2">VIS-2026-00001</p>
+              <p class="mb-1 text-muted small">Status</p>
+              <span class="badge badge-expected">Expected</span>
+            </div>
+          </div>
+          <div class="hero-qr"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title">How a visit works</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <article class="feature-card">
+          <span class="step">1</span>
+          <h3>Register</h3>
+          <p>Fill in your details, host name, purpose, and visit time. Upload a photo for the badge.</p>
+        </article>
+      </div>
+      <div class="col-md-4">
+        <article class="feature-card">
+          <span class="step">2</span>
+          <h3>Receive a pass</h3>
+          <p>The system issues a unique Pass ID, QR code, and a printable digital visitor pass.</p>
+        </article>
+      </div>
+      <div class="col-md-4">
+        <article class="feature-card">
+          <span class="step">3</span>
+          <h3>Check in at the gate</h3>
+          <p>Security scans the QR or types the Pass ID, then checks the visitor in and out.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

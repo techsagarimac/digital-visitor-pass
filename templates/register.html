@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Register Visitor{% endblock %}
+
+{% block content %}
+<section class="py-4 py-lg-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="page-card">
+          <h1 class="h3 mb-1">Register a visitor</h1>
+          <p class="text-muted mb-4">All fields are required. Use a clear photo of the visitor’s face.</p>
+
+          <form method="post" action="{{ url_for('visitor.register') }}" enctype="multipart/form-data" novalidate id="registerForm">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="full_name">Full Name</label>
+                <input class="form-control" type="text" id="full_name" name="full_name" required maxlength="120" value="{{ form_data.full_name if form_data else '' }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="mobile">Mobile Number</label>
+                <input class="form-control" type="tel" id="mobile" name="mobile" required maxlength="16" placeholder="10 to 15 digits" value="{{ form_data.mobile if form_data else '' }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="email">Email</label>
+                <input class="form-control" type="email" id="email" name="email" required maxlength="120" value="{{ form_data.email if form_data else '' }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="organization">Visitor Organization</label>
+                <input class="form-control" type="text" id="organization" name="organization" required maxlength="120" value="{{ form_data.organization if form_data else '' }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="host_name">Person to Visit</label>
+                <input class="form-control" type="text" id="host_name" name="host_name" required maxlength="120" value="{{ form_data.host_name if form_data else '' }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="purpose">Purpose of Visit</label>
+                <input class="form-control" type="text" id="purpose" name="purpose" required maxlength="255" value="{{ form_data.purpose if form_data else '' }}">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="visit_date">Visit Date</label>
+                <input class="form-control" type="date" id="visit_date" name="visit_date" required value="{{ form_data.visit_date if form_data else '' }}">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="expected_entry">Expected Entry</label>
+                <input class="form-control" type="time" id="expected_entry" name="expected_entry" required value="{{ form_data.expected_entry if form_data else '' }}">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="expected_exit">Expected Exit</label>
+                <input class="form-control" type="time" id="expected_exit" name="expected_exit" required value="{{ form_data.expected_exit if form_data else '' }}">
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="photo">Visitor Photo (JPG or PNG, max 2 MB)</label>
+                <input class="form-control" type="file" id="photo" name="photo" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+              <button class="btn btn-primary" type="submit">Submit Registration</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

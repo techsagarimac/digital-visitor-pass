@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<section class="py-4">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+      <div>
+        <h1 class="h3 mb-0">Visitor reports</h1>
+        <p class="text-muted mb-0">{{ today.strftime('%d %B %Y') }}</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-primary btn-sm" href="{{ url_for('admin.export_csv') }}">Export CSV</a>
+        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('admin.export_pdf') }}">Export PDF</a>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3"><article class="stat-card"><span>Today's visitors</span><strong>{{ summary.daily_count }}</strong></article></div>
+      <div class="col-6 col-lg-3"><article class="stat-card"><span>Checked in</span><strong>{{ summary.checked_in }}</strong></article></div>
+      <div class="col-6 col-lg-3"><article class="stat-card"><span>Checked out</span><strong>{{ summary.checked_out }}</strong></article></div>
+      <div class="col-6 col-lg-3"><article class="stat-card"><span>Expected</span><strong>{{ summary.expected }}</strong></article></div>
+    </div>
+
+    <div class="page-card mb-4">
+      <h2 class="h5">Status breakdown</h2>
+      <ul class="list-unstyled mb-0">
+        {% for status, count in by_status %}
+          <li class="d-flex justify-content-between border-bottom py-2">
+            <span class="status-pill status-{{ status|lower }}">{{ status.replace('_', ' ').title() }}</span>
+            <strong>{{ count }}</strong>
+          </li>
+        {% else %}
+          <li class="text-muted">No records yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="page-card">
+      <h2 class="h5">Today's visitors</h2>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr><th>Pass ID</th><th>Name</th><th>Host</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            {% for visitor in recent %}
+            <tr>
+              <td class="pass-mono">{{ visitor.pass_id }}</td>
+              <td>{{ visitor.full_name }}</td>
+              <td>{{ visitor.host_name }}</td>
+              <td><span class="status-pill status-{{ visitor.status|lower }}">{{ visitor.status_label() }}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-muted">No visitors scheduled today.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

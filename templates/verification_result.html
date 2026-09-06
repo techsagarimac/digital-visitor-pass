@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Verification Result{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        {% if state == 'valid' %}
+        <div class="page-card verify-card verify-valid">
+          <p class="eyebrow">Gate verification</p>
+          <h1 class="h3">VALID VISITOR PASS</h1>
+          <p class="pass-mono mb-4">{{ visitor.pass_id }}</p>
+          <dl class="result-grid">
+            <div><dt>Visitor</dt><dd>{{ visitor.full_name }}</dd></div>
+            <div><dt>Organization</dt><dd>{{ visitor.organization }}</dd></div>
+            <div><dt>Host</dt><dd>{{ visitor.host_name }}</dd></div>
+            <div><dt>Purpose</dt><dd>{{ visitor.purpose }}</dd></div>
+            <div><dt>Date</dt><dd>{{ visitor.visit_date.strftime('%d %b %Y') }}</dd></div>
+            <div><dt>Expected time</dt><dd>{{ visitor.expected_entry.strftime('%H:%M') }} – {{ visitor.expected_exit.strftime('%H:%M') }}</dd></div>
+            <div><dt>Status</dt><dd><span class="status-pill status-{{ visitor.status|lower }}">{{ visitor.status_label() }}</span></dd></div>
+          </dl>
+          {% if admin_logged_in %}
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            {% if visitor.status == 'EXPECTED' %}
+            <form method="post" action="{{ url_for('verification.public_check_in', pass_id=visitor.pass_id) }}">
+              <button class="btn btn-success" type="submit">Check In</button>
+            </form>
+            {% endif %}
+            {% if visitor.status == 'CHECKED_IN' %}
+            <form method="post" action="{{ url_for('verification.public_check_out', pass_id=visitor.pass_id) }}">
+              <button class="btn btn-outline-success" type="submit">Check Out</button>
+            </form>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+        {% elif state == 'expired' %}
+        <div class="page-card verify-card verify-expired text-center">
+          <h1 class="h3">EXPIRED VISITOR PASS</h1>
+          <p class="text-muted mb-0">This Pass ID is no longer valid for entry.</p>
+        </div>
+        {% else %}
+        <div class="page-card verify-card verify-invalid text-center">
+          <h1 class="h3">INVALID VISITOR PASS</h1>
+          <p class="text-muted mb-0">No valid pass was found for the ID entered.</p>
+        </div>
+        {% endif %}
+        <p class="text-center mt-3"><a href="{{ url_for('verification.verify_form') }}">Verify another pass</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

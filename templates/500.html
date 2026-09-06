@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Something went wrong{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="page-card text-center mx-auto" style="max-width: 32rem;">
+      <h1 class="h3">Something went wrong</h1>
+      <p class="text-muted">Please try again. If the problem continues, contact campus security.</p>
+      <a class="btn btn-primary" href="{{ url_for('visitor.index') }}">Go home</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

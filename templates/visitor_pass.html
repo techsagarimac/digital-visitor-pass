@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Visitor Pass {{ visitor.pass_id }}{% endblock %}
+{% block body_class %}pass-page{% endblock %}
+
+{% block content %}
+<section class="py-4 py-lg-5">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+      <h1 class="h4 mb-0">Digital visitor pass</h1>
+      <div class="d-flex gap-2">
+        <a class="btn btn-primary btn-sm" href="{{ url_for('verification.download_pass', pass_id=visitor.pass_id) }}">Download PDF</a>
+        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="window.print()">Print</button>
+      </div>
+    </div>
+
+    <article class="visitor-badge mx-auto">
+      <header class="visitor-badge-head">
+        <span class="logo-chip">AIT</span>
+        <div>
+          <small>{{ org_name }}</small>
+          <strong>VISITOR PASS</strong>
+        </div>
+      </header>
+      <div class="visitor-badge-body">
+        <div class="badge-photo">
+          {% if visitor.photo_filename %}
+            <img src="{{ url_for('static', filename='uploads/' + visitor.photo_filename) }}" alt="Visitor photo">
+          {% endif %}
+        </div>
+        <div class="badge-details">
+          <h2>{{ visitor.full_name }}</h2>
+          <p class="pass-mono">{{ visitor.pass_id }}</p>
+          <dl>
+            <div><dt>Organization</dt><dd>{{ visitor.organization }}</dd></div>
+            <div><dt>Person to visit</dt><dd>{{ visitor.host_name }}</dd></div>
+            <div><dt>Purpose</dt><dd>{{ visitor.purpose }}</dd></div>
+            <div><dt>Visit date</dt><dd>{{ visitor.visit_date.strftime('%d %b %Y') }}</dd></div>
+            <div><dt>Entry / Exit</dt><dd>{{ visitor.expected_entry.strftime('%H:%M') }} – {{ visitor.expected_exit.strftime('%H:%M') }}</dd></div>
+          </dl>
+        </div>
+        <div class="badge-qr">
+          {% if visitor.qr_filename %}
+            <img src="{{ url_for('static', filename='qr/' + visitor.qr_filename) }}" alt="QR code">
+            <small>Scan to verify</small>
+          {% endif %}
+        </div>
+      </div>
+      <footer class="visitor-badge-foot">
+        <span class="status-pill status-{{ visitor.status|lower }}">{{ visitor.status_label() }}</span>
+        <span>Present this pass at the security desk. Not transferable.</span>
+      </footer>
+    </article>
+  </div>
+</section>
+{% endblock %}

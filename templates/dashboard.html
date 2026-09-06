@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="py-4">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+      <div>
+        <h1 class="h3 mb-0">Security dashboard</h1>
+        <p class="text-muted mb-0">Signed in as {{ session.get('admin_username') }}</p>
+      </div>
+      <a class="btn btn-outline-primary btn-sm" href="{{ url_for('admin.reports') }}">Open reports</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg">
+        <article class="stat-card"><span>Total Visitors</span><strong>{{ stats.total }}</strong></article>
+      </div>
+      <div class="col-6 col-lg">
+        <article class="stat-card"><span>Today's Visitors</span><strong>{{ stats.today }}</strong></article>
+      </div>
+      <div class="col-6 col-lg">
+        <article class="stat-card"><span>Currently Inside</span><strong>{{ stats.inside }}</strong></article>
+      </div>
+      <div class="col-6 col-lg">
+        <article class="stat-card"><span>Expected</span><strong>{{ stats.expected }}</strong></article>
+      </div>
+      <div class="col-6 col-lg">
+        <article class="stat-card"><span>Checked Out</span><strong>{{ stats.checked_out }}</strong></article>
+      </div>
+    </div>
+
+    <div class="page-card">
+      <form class="row g-2 align-items-end mb-3" method="get">
+        <div class="col-md-3">
+          <label class="form-label" for="q">Search</label>
+          <input class="form-control" type="search" id="q" name="q" value="{{ filters.q }}" placeholder="Name, pass ID, host">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label" for="visit_date">Date</label>
+          <input class="form-control" type="date" id="visit_date" name="visit_date" value="{{ filters.visit_date }}">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label" for="status">Status</label>
+          <select class="form-select" id="status" name="status">
+            <option value="">All</option>
+            {% for item in statuses %}
+              <option value="{{ item }}" {% if filters.status == item %}selected{% endif %}>{{ item.replace('_', ' ').title() }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="host">Host</label>
+          <select class="form-select" id="host" name="host">
+            <option value="">All hosts</option>
+            {% for host in hosts %}
+              <option value="{{ host }}" {% if filters.host == host %}selected{% endif %}>{{ host }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+      </form>
+
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Pass ID</th>
+              <th>Visitor Name</th>
+              <th>Organization</th>
+              <th>Host</th>
+              <th>Visit Date</th>
+              <th>Entry Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for visitor in visitors %}
+            <tr>
+              <td class="pass-mono">{{ visitor.pass_id }}</td>
+              <td>{{ visitor.full_name }}</td>
+              <td>{{ visitor.organization }}</td>
+              <td>{{ visitor.host_name }}</td>
+              <td>{{ visitor.visit_date.strftime('%d %b %Y') }}</td>
+              <td>{{ visitor.expected_entry.strftime('%H:%M') }}</td>
+              <td><span class="status-pill status-{{ visitor.status|lower }}">{{ visitor.status_label() }}</span></td>
+              <td>
+                <div class="d-flex flex-wrap gap-1">
+                  <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin.visitor_details', pass_id=visitor.pass_id) }}">View</a>
+                  <a class="btn btn-sm btn-outline-primary" href="{{ url_for('verification.verify_pass', pass_id=visitor.pass_id) }}">Verify</a>
+                  {% if visitor.status == 'EXPECTED' %}
+                  <form method="post" action="{{ url_for('admin.check_in', pass_id=visitor.pass_id) }}">
+                    <button class="btn btn-sm btn-success" type="submit">Check In</button>
+                  </form>
+                  {% endif %}
+                  {% if visitor.status == 'CHECKED_IN' %}
+                  <form method="post" action="{{ url_for('admin.check_out', pass_id=visitor.pass_id) }}">
+                    <button class="btn btn-sm btn-outline-success" type="submit">Check Out</button>
+                  </form>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="text-muted">No visitors match these filters.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% if pagination.pages > 1 %}
+      <nav class="mt-3">
+        <ul class="pagination mb-0">
+          {% if pagination.has_prev %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('admin.dashboard', page=pagination.prev_num, q=filters.q, status=filters.status, visit_date=filters.visit_date, host=filters.host) }}">Previous</a></li>
+          {% endif %}
+          <li class="page-item disabled"><span class="page-link">Page {{ pagination.page }} of {{ pagination.pages }}</span></li>
+          {% if pagination.has_next %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('admin.dashboard', page=pagination.next_num, q=filters.q, status=filters.status, visit_date=filters.visit_date, host=filters.host) }}">Next</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

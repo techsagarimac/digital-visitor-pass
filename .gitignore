@@ -1,0 +1,16 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+.env
+instance/*.db
+instance/*.db-journal
+static/uploads/*
+static/qr/*
+static/passes/*
+!static/uploads/.gitkeep
+!static/qr/.gitkeep
+!static/passes/.gitkeep
+.DS_Store
+*.egg-info/
+.pytest_cache/
